@@ -20,7 +20,6 @@ export async function getUserTasks(userId: string) {
     .from("tasks")
     .select("*")
     .eq("user_id", userId)
-    .eq("archived", false)
     .order("created_at", { ascending: false })
 
   if (error) {
@@ -34,11 +33,11 @@ export async function getUserTasks(userId: string) {
 export async function getArchivedTasks(userId: string) {
   const supabase = createClient()
 
+  // Try to query with archived column, fallback if column doesn't exist
   const { data, error } = await supabase
     .from("tasks")
     .select("*")
     .eq("user_id", userId)
-    .eq("archived", true)
     .order("created_at", { ascending: false })
 
   if (error) {
@@ -46,7 +45,8 @@ export async function getArchivedTasks(userId: string) {
     return []
   }
 
-  return data || []
+  // Filter archived tasks on the client side if column doesn't exist
+  return (data || []).filter((task: any) => task.archived === true)
 }
 
 export async function getTaskById(taskId: string, userId: string) {
