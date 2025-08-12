@@ -188,7 +188,7 @@ export async function archiveTask(taskId: string) {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/auth/login")
+    return { error: "You must be logged in to archive tasks" }
   }
 
   try {
@@ -206,7 +206,7 @@ export async function archiveTask(taskId: string) {
       return { error: "Failed to archive task. Please try again." }
     }
 
-    redirect("/dashboard")
+    return { success: "Task archived successfully" }
   } catch (error) {
     console.error("Archive task error:", error)
     return { error: "An unexpected error occurred. Please try again." }
@@ -220,7 +220,7 @@ export async function unarchiveTask(taskId: string) {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/auth/login")
+    return { error: "You must be logged in to unarchive tasks" }
   }
 
   try {
@@ -238,7 +238,7 @@ export async function unarchiveTask(taskId: string) {
       return { error: "Failed to unarchive task. Please try again." }
     }
 
-    redirect("/dashboard")
+    return { success: "Task unarchived successfully" }
   } catch (error) {
     console.error("Unarchive task error:", error)
     return { error: "An unexpected error occurred. Please try again." }
