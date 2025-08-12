@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useState } from "react"
 import { useFormStatus } from "react-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -30,7 +30,13 @@ function SubmitButton() {
 }
 
 export default function SignUpForm() {
-  const [state, formAction] = useActionState(signUp, null)
+  const [state, setState] = useState<{ error?: string; success?: string } | null>(null)
+
+  async function handleSubmit(formData: FormData) {
+    setState(null)
+    const result = await signUp(null, formData)
+    setState(result)
+  }
 
   return (
     <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-lg shadow-lg">
@@ -39,7 +45,7 @@ export default function SignUpForm() {
         <p className="text-gray-600">Create your account and get 5 free tasks</p>
       </div>
 
-      <form action={formAction} className="space-y-6">
+      <form action={handleSubmit} className="space-y-6">
         {state?.error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">{state.error}</div>
         )}
