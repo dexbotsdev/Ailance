@@ -134,8 +134,7 @@ export async function createNewTask(prevState: any, formData: FormData) {
       console.error("Failed to trigger AI processing:", error)
     })
 
-    // Redirect to dashboard
-    redirect("/dashboard")
+    return { success: "Task created successfully! Redirecting to dashboard..." }
   } catch (error) {
     console.error("Create task error:", error)
     return { error: "An unexpected error occurred. Please try again." }
