@@ -181,3 +181,67 @@ export async function retryTask(taskId: string) {
     return { error: "Failed to retry task. Please try again." }
   }
 }
+
+export async function archiveTask(taskId: string) {
+  const supabase = createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect("/auth/login")
+  }
+
+  try {
+    const { error } = await supabase
+      .from("tasks")
+      .update({
+        archived: true,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", taskId)
+      .eq("user_id", user.id)
+
+    if (error) {
+      console.error("Error archiving task:", error)
+      return { error: "Failed to archive task. Please try again." }
+    }
+
+    redirect("/dashboard")
+  } catch (error) {
+    console.error("Archive task error:", error)
+    return { error: "An unexpected error occurred. Please try again." }
+  }
+}
+
+export async function unarchiveTask(taskId: string) {
+  const supabase = createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect("/auth/login")
+  }
+
+  try {
+    const { error } = await supabase
+      .from("tasks")
+      .update({
+        archived: false,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", taskId)
+      .eq("user_id", user.id)
+
+    if (error) {
+      console.error("Error unarchiving task:", error)
+      return { error: "Failed to unarchive task. Please try again." }
+    }
+
+    redirect("/dashboard")
+  } catch (error) {
+    console.error("Unarchive task error:", error)
+    return { error: "An unexpected error occurred. Please try again." }
+  }
+}

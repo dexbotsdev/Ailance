@@ -20,10 +20,29 @@ export async function getUserTasks(userId: string) {
     .from("tasks")
     .select("*")
     .eq("user_id", userId)
+    .eq("archived", false)
     .order("created_at", { ascending: false })
 
   if (error) {
     console.error("Error fetching user tasks:", error)
+    return []
+  }
+
+  return data || []
+}
+
+export async function getArchivedTasks(userId: string) {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from("tasks")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("archived", true)
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    console.error("Error fetching archived tasks:", error)
     return []
   }
 
