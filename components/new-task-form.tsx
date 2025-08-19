@@ -45,13 +45,10 @@ export default function NewTaskForm({ credits }: NewTaskFormProps) {
   const router = useRouter()
 
   useEffect(() => {
-    if (state?.success) {
-      // Show success message briefly then redirect
-      setTimeout(() => {
-        router.push("/dashboard")
-      }, 1500)
+    if (state?.success && state?.taskId) {
+      router.push(`/task/${state.taskId}`)
     }
-  }, [state?.success, router])
+  }, [state?.success, state?.taskId, router])
 
   const examplePrompts = [
     "Write a professional email to follow up on a job application",
@@ -72,7 +69,7 @@ export default function NewTaskForm({ credits }: NewTaskFormProps) {
                 <span className="text-red-600 dark:text-red-400 text-xl">⚠️</span>
               </div>
               <div>
-                <h3 className="font-semibold text-red-800 dark:text-red-200">No Credits Remaining</h3>
+                <h3 className="font-semibold text-red-800 dark:text-white">No Credits Remaining</h3>
                 <p className="text-red-700 dark:text-red-300">
                   You need at least 1 credit to create a new task. Please upgrade your plan.
                 </p>
